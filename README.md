@@ -151,14 +151,14 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 
 In this first example, we want to setup a *loghost* that centralizes logs of several *clients*.
 
-1. It accepts logs via the RELP protocol,
-2. only over TLS,
-3. on port 6514.
+1) It accepts logs via the RELP protocol,
+2) only over TLS,
+3) on port 6514.
 
 
-1. It outputs the received logs in a file,
-2. that is specific for each client,
-3. in RFC5424 format.
+1) It outputs the received logs in a file,
+2) that is specific for each client,
+3) in RFC5424 format.
 
 ```yaml
 ---
@@ -218,9 +218,9 @@ rsyslog_outputs: []
 
 In this second example, we want to setup a *client* that forwards all its logs to the previously configured *loghost*.
 
-1. It sends logs via the RELP protocol,
-2. only over TLS,
-3. on port 6514.
+1) It sends logs via the RELP protocol,
+2) only over TLS,
+3) on port 6514.
 
 ```yaml
 ---
