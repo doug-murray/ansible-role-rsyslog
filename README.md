@@ -22,7 +22,7 @@ Variables and *properties* in bold are mandatory. Others are optional.
 | `rsyslog_templates`           | A list of [template](#template-properties).                                        | `[]`                 |
 | `rsyslog_rulesets`            | A list of [ruleset](#ruleset-properties).                                          | `[]`                 |
 | `rsyslog_inputs`              | A list of [input](#input-properties).                                              | `[]`                 |
-| `rsyslog_outputs`             | A list of [ouput](#output-properties).                                             | `[]`                 |
+| `rsyslog_outputs`             | A list of [output](#output-properties).                                            | `[]`                 |
 
 As you can see, the default configuration does nothing. It's just an empty shell.
 
