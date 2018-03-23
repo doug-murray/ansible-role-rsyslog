@@ -16,8 +16,8 @@ Variables and *properties* in bold are mandatory. Others are optional.
 
 | Variable name                 | Description                                                                        | Default value        |
 | ----------------------------- | ---------------------------------------------------------------------------------- | -------------------- |
-| `rsyslog_additional_packages` | Wether we should flush the current ruleset or not.                                 | `[]`                 |
-| `rsyslog_working_dir`         | Path to the configuration file.                                                    | `/var/spool/rsyslog` |
+| `rsyslog_additional_packages` | List of additional packages to install with rsyslog. (i.e. `rsyslog-imrelp`)       | `[]`                 |
+| `rsyslog_working_dir`         | Path to the directory where rsyslog must store the queue files.                    | `/var/spool/rsyslog` |
 | `rsyslog_tls`                 | A `rsyslog_tls` dict. See [rsyslog_tls properties](#rsyslog_tls-properties) below. | `{}`                 |
 | `rsyslog_templates`           | A list of [template](#template-properties).                                        | `[]`                 |
 | `rsyslog_rulesets`            | A list of [ruleset](#ruleset-properties).                                          | `[]`                 |
@@ -31,7 +31,7 @@ As you can see, the default configuration does nothing. It's just an empty shell
 
 `rsyslog_tls` is a `dict` that stores some paths to the needed certificates and keys needed for TLS to  work.
 
-If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** all 3 properties of the dict.
+If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** specify all 3 properties.
 
 | Property name | Description                                                                 |
 | ------------- | --------------------------------------------------------------------------- |
@@ -43,13 +43,15 @@ If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** al
 ### template properties
 
 | Property name | Description                           |
-| ------------- | -- ---------------------------------- |
+| ------------- | ------------------------------------- |
 | **`name`**    | Name of the template. Must be unique. |
 | **`string`**  | Template.                             |
 
-Note: For now we only support **string templates**. *list templates*, *subtree templates* and *plugin templates* are **not** supported. *options* aren't either.
+:heavy_exclamation_mark:
 
-[Documentation](https://www.rsyslog.com/doc/v8-stable/configuration/templates.html)
+- For now we only support **string templates**. *list templates*, *subtree templates* and *plugin templates* are **not** supported. *options* aren't either.
+
+:green_book: [Documentation](https://www.rsyslog.com/doc/v8-stable/configuration/templates.html)
 
 
 ### ruleset properties
@@ -59,8 +61,8 @@ Note: For now we only support **string templates**. *list templates*, *subtree t
 | **`name`**    | Name of the ruleset.                                                                                        |
 | **`script`**  | Instructions to execute when the ruleset is reached. Please see official documentation for further details. |
 
-[Ruleset documentation](https://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html)
-[RainerScript documentation](https://www.rsyslog.com/doc/v8-stable/rainerscript/index.html)
+:green_book: [Ruleset documentation](https://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html)
+:green_book: [RainerScript documentation](https://www.rsyslog.com/doc/v8-stable/rainerscript/index.html)
 
 #### inputs properties
 
@@ -70,12 +72,12 @@ Note: For now we only support **string templates**. *list templates*, *subtree t
 | **`parameters`** | A dict of parameters passed when loading **the module.** |
 | **`listeners`**  | A list of [listeners](#listeners-properties).            |
 
-Note:
+:heavy_exclamation_mark:
 
 - Only modules that have at least one listener will be loaded. If you don't provide at least one listener, the module will be ignored.
 - The `parameters` dict doesn't follow a strict, fixed schema. Keys are basically the names of the options supported by the module. Values must be set accordingly. If an option accept an array, you have to provide a list. The template will transform it into the expected array. Please also be aware that some modules have mandatory options. Please refer to the module documentation.
     
-[List of input modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_input.html)
+:green_book: [List of input modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_input.html)
 
 #### listener properties
 
@@ -105,7 +107,7 @@ Listener properties depends on the options supported by the module. So, keys are
 
 We strongly advise to use **rulesets** to keep your configuration clean.
 
-[Documentation](https://www.rsyslog.com/doc/v8-stable/configuration/input.html)
+:green_book: [Documentation](https://www.rsyslog.com/doc/v8-stable/configuration/input.html)
 
 
 ### outputs properties
@@ -115,7 +117,7 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 | **`module`**  | Name of the module to load.                       |
 | **`actions`** | A list of [actions](#actions-element-properties). |
 
-[List of output modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_output.html)
+:green_book: [List of output modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_output.html)
 
 #### actions element properties
 
@@ -124,11 +126,11 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 | **`selector`**   | *Selector* that catches the message.     |
 | **`parameters`** | A dict of parameters **for the filter**. |
 
-Note:
+:heavy_exclamation_mark:
 
 - The `parameters` dict doesn't follow a strict, fixed scheme. Keys are basically the names of the options supported by the module. Values must be set accordingly. If an option accepts an array, you have to provide a list. The template will transform it into the expected array. Please also be aware that some modules have mandatory options. Please refer to the module documentation.
 
-[Selector documentation](https://www.rsyslog.com/doc/v8-stable/configuration/sysklogd_format.html#selectors)
+:green_book: [Selector documentation](https://www.rsyslog.com/doc/v8-stable/configuration/sysklogd_format.html#selectors)
 
 
 ## Examples
@@ -140,6 +142,7 @@ In this first example, we want to setup a *loghost* that centralizes logs of sev
 1. It accepts logs via the RELP protocol,
 2. only over TLS,
 3. on port 6514.
+
 
 1. It outputs the received logs in a file,
 2. that is specific for each client,
