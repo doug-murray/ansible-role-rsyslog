@@ -47,11 +47,13 @@ If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** sp
 | **`name`**    | Name of the template. Must be unique. |
 | **`string`**  | Template.                             |
 
-:heavy_exclamation_mark:
+:heavy_exclamation_mark: Notes:
 
 - For now we only support **string templates**. *list templates*, *subtree templates* and *plugin templates* are **not** supported. *options* aren't either.
 
-:green_book: [Documentation](https://www.rsyslog.com/doc/v8-stable/configuration/templates.html)
+:green_book: Documentation:
+
+- [Templates documentation](https://www.rsyslog.com/doc/v8-stable/configuration/templates.html)
 
 
 ### ruleset properties
@@ -61,8 +63,10 @@ If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** sp
 | **`name`**    | Name of the ruleset.                                                                                        |
 | **`script`**  | Instructions to execute when the ruleset is reached. Please see official documentation for further details. |
 
-:green_book: [Ruleset documentation](https://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html)
-:green_book: [RainerScript documentation](https://www.rsyslog.com/doc/v8-stable/rainerscript/index.html)
+:green_book: Documentation:
+
+- [Ruleset documentation](https://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html)
+- [RainerScript documentation](https://www.rsyslog.com/doc/v8-stable/rainerscript/index.html)
 
 #### inputs properties
 
@@ -72,12 +76,14 @@ If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** sp
 | **`parameters`** | A dict of parameters passed when loading **the module.** |
 | **`listeners`**  | A list of [listeners](#listeners-properties).            |
 
-:heavy_exclamation_mark:
+:heavy_exclamation_mark: Notes:
 
 - Only modules that have at least one listener will be loaded. If you don't provide at least one listener, the module will be ignored.
 - The `parameters` dict doesn't follow a strict, fixed schema. Keys are basically the names of the options supported by the module. Values must be set accordingly. If an option accept an array, you have to provide a list. The template will transform it into the expected array. Please also be aware that some modules have mandatory options. Please refer to the module documentation.
     
-:green_book: [List of input modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_input.html)
+:green_book: Documentation:
+
+- [List of input modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_input.html)
 
 #### listener properties
 
@@ -107,7 +113,9 @@ Listener properties depends on the options supported by the module. So, keys are
 
 We strongly advise to use **rulesets** to keep your configuration clean.
 
-:green_book: [Documentation](https://www.rsyslog.com/doc/v8-stable/configuration/input.html)
+:green_book: Documentation:
+
+- [Input documentation](https://www.rsyslog.com/doc/v8-stable/configuration/input.html)
 
 
 ### outputs properties
@@ -117,7 +125,9 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 | **`module`**  | Name of the module to load.                       |
 | **`actions`** | A list of [actions](#actions-element-properties). |
 
-:green_book: [List of output modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_output.html)
+:green_book: Documentation:
+
+- [List of output modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_output.html)
 
 #### actions element properties
 
@@ -126,11 +136,13 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 | **`selector`**   | *Selector* that catches the message.     |
 | **`parameters`** | A dict of parameters **for the filter**. |
 
-:heavy_exclamation_mark:
+:heavy_exclamation_mark: Notes:
 
 - The `parameters` dict doesn't follow a strict, fixed scheme. Keys are basically the names of the options supported by the module. Values must be set accordingly. If an option accepts an array, you have to provide a list. The template will transform it into the expected array. Please also be aware that some modules have mandatory options. Please refer to the module documentation.
 
-:green_book: [Selector documentation](https://www.rsyslog.com/doc/v8-stable/configuration/sysklogd_format.html#selectors)
+:green_book: Documentation:
+
+- [Selector documentation](https://www.rsyslog.com/doc/v8-stable/configuration/sysklogd_format.html#selectors)
 
 
 ## Examples
