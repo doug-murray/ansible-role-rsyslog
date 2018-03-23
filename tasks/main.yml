@@ -1,0 +1,67 @@
+---
+- name: Install
+  include_tasks: "setup-{{ ansible_os_family }}.yml"
+
+- name: Remove useless configuration file
+  file:
+    path: "/etc/rsyslog.d/listen.conf"
+    state: absent
+
+- name: Set up configuration file
+  template:
+    src: templates/rsyslog.conf.j2
+    dest: "/etc/rsyslog.conf"
+    owner: root
+    group: root
+    mode: 0644
+    validate: "rsyslogd -f %s -N 1"
+
+- name: SELinux (UDP)
+  seport:
+    proto: udp
+    ports: "{{ item }}"
+    setype: syslogd_port_t
+    state: present
+  # We select all inputs that have a module=="imudp".
+  # For each one, we select the listeners.
+  # For each listener, we select the port which is mandatory in this case.
+  with_items: "{{ rsyslog_inputs
+                  | selectattr('type', 'equalto', 'imudp')
+                  | selectattr('listeners')
+                  | map(attribute='listeners')
+                  | sum(start=[])
+                  | map(attribute='port')
+                  | list
+                  | unique }}"
+  when: ansible_selinux
+
+- name: SELinux (TCP)
+  seport:
+    proto: tcp
+    ports: "{{ item }}"
+    setype: syslogd_port_t
+    state: present
+  # We select all inputs that don't have a module=="imudp".
+  # For each one, we select the listeners.
+  # For each listener, we select the port when it is defined.
+  with_items: "{{ rsyslog_inputs
+                  | rejectattr('module', 'equalto', 'imudp')
+                  | selectattr('listeners')
+                  | map(attribute='listeners')
+                  | sum(start=[])
+                  | selectattr('port', 'defined')
+                  | map(attribute='port')
+                  | list
+                  | unique }}"
+  when: ansible_selinux
+
+- name: Start service
+  service:
+    name: rsyslog
+    state: started
+
+- name: Enable service
+  service:
+    name: rsyslog
+    enabled: yes
+...

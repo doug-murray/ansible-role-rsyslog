@@ -1,0 +1,119 @@
+#jinja2: lstrip_blocks: True
+{{ ansible_managed | comment }}
+
+
+#### MODULES
+
+# Provides support for local system logging (e.g. via logger command):
+module(
+    load="imuxsock"
+)
+
+{% for module in rsyslog_inputs %}
+{# Only load module if we have a listener for it. #}
+{% if module.listeners %}
+
+module(
+    load="{{ module.module }}"
+{% if module.parameters is defined %}
+{% for key, value in module.parameters.items() %}
+    {% if value is not string and value is iterable %}
+    {{ "%s=[\"%s\"]" | format(key, value | join("\", \"")) }}
+    {% else %}
+    {{ "%s=\"%s\"" | format(key, value) }}
+    {% endif %}
+{% endfor %}
+{% endif %}
+)
+{% endif %}
+{% endfor %}
+
+{% for module in rsyslog_outputs %}
+{# 'omfwd' module doesn't need to be explicitly loaded. #}
+{% if module.module != "omfwd" %}
+
+module(
+    load="{{ module.module }}"
+)
+{% endif %}
+{% endfor %}
+
+
+#### TEMPLATES
+
+{% for template in rsyslog_templates %}
+template(
+    name="{{ template.name}}"
+    type="string"
+    string="{{ template.string }}"
+)
+
+{% endfor %}
+
+
+#### GLOBAL DIRECTIVES
+
+global(
+    workdirectory="{{ rsyslog_working_dir }}"
+    {% if rsyslog_tls %}
+    defaultNetStreamDriver="gtls"
+    defaultNetStreamDriverCAFile="{{ rsyslog_tls.cacert }}"
+    defaultNetStreamDriverCertFile="{{ rsyslog_tls.cert }}"
+    defaultNetStreamDriverKeyFile="{{ rsyslog_tls.key }}"
+    {% endif %}
+)
+
+# Use default timestamp format:
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+# Include all config files in /etc/rsyslog.d/
+$IncludeConfig /etc/rsyslog.d/*.conf
+
+
+#### RULESETS
+
+{% for ruleset in rsyslog_rulesets %}
+ruleset(name="{{ ruleset.name }}") {
+{{ ruleset.script }}
+}
+{% endfor %}
+
+
+### LISTENERS
+
+{% for input in rsyslog_inputs %}
+{% if input.listeners %}
+{% for listener in input.listeners %}
+
+input(
+    type="{{ input.module }}"
+{% for key, value in listener.items() %}
+    {% if value is not string and value is iterable %}
+    {{ "%s=[\"%s\"]" | format(key, value | join("\", \"")) }}
+    {% else %}
+    {{ "%s=\"%s\"" | format(key, value) }}
+    {% endif %}
+{% endfor %}
+)
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+
+### FILTERS
+
+{% for output in rsyslog_outputs %}
+{% for action in output.actions %}
+
+{{ action.selector }} action(
+    type="{{ output.module }}"
+    {% for key, value in action.parameters.items() %}
+    {% if value is not string and value is iterable %}
+    {{ "%s=[\"%s\"]" | format(key, value | join("\", \"")) }}
+    {% else %}
+    {{ "%s=\"%s\"" | format(key, value) }}
+    {% endif %}
+    {% endfor %}
+)
+{% endfor %}
+{% endfor %}

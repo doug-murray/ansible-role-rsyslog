@@ -1,0 +1,15 @@
+---
+rsyslog_additional_packages: []
+
+rsyslog_working_dir: "/var/spool/rsyslog"
+
+rsyslog_tls: {}
+
+rsyslog_templates:
+  - name: "rfc5424Format"
+    string: "<%PRI%>%PROTOCOL-VERSION% %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %STRUCTURED-DATA% %msg%\\n"
+
+rsyslog_rulesets: []
+rsyslog_inputs: []
+rsyslog_outputs: []
+...
