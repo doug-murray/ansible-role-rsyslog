@@ -68,13 +68,14 @@ If you plan to use TLS (be it with `imtcp` or with `imrelp`), you **have to** sp
 - [Ruleset documentation](https://www.rsyslog.com/doc/v8-stable/concepts/multi_ruleset.html)
 - [RainerScript documentation](https://www.rsyslog.com/doc/v8-stable/rainerscript/index.html)
 
-#### inputs properties
+
+### input properties
 
 | Property name    | Description                                              |
 | ---------------- | -------------------------------------------------------- |
 | **`module`**     | Name of the module to load.                              |
 | **`parameters`** | A dict of parameters passed when loading **the module.** |
-| **`listeners`**  | A list of [listeners](#listeners-properties).            |
+| **`listeners`**  | A list of [listeners](#listener-properties).            |
 
 :heavy_exclamation_mark: Notes:
 
@@ -118,18 +119,18 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 - [Input documentation](https://www.rsyslog.com/doc/v8-stable/configuration/input.html)
 
 
-### outputs properties
+### output properties
 
 | Property name | Description                                       |
 | ------------- | ------------------------------------------------- |
 | **`module`**  | Name of the module to load.                       |
-| **`actions`** | A list of [actions](#actions-element-properties). |
+| **`actions`** | A list of [actions](#action-properties). |
 
 :green_book: Documentation:
 
 - [List of output modules](https://www.rsyslog.com/doc/v8-stable/configuration/modules/idx_output.html)
 
-#### actions element properties
+#### action properties
 
 | Property name    | Description                              |
 | ---------------- | ---------------------------------------- |
@@ -154,12 +155,9 @@ In this first example, we want to setup a *loghost* that centralizes logs of sev
 1. It accepts logs via the RELP protocol,
 2. only over TLS,
 3. on port 6514.
-
- 
-
-1. It outputs the received logs in a file,
-2. that is specific for each client,
-3. in RFC5424 format.
+4. It outputs the received logs in a file,
+5. that is specific for each client,
+6. in RFC5424 format.
 
 ```yaml
 ---
