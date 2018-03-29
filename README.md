@@ -199,7 +199,8 @@ rsyslog_inputs:
       streamdriver.name: "gtls"
       streamdriver.mode: 1
       streamdriver.authmode: "x509/name"
-      permittedpeer: "client001"
+      permittedpeer:
+        - "client001"
     listeners:
       - port: 6514
         ruleset: "remote"
