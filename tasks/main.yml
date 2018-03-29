@@ -26,7 +26,7 @@
   # For each one, we select the listeners.
   # For each listener, we select the port which is mandatory in this case.
   with_items: "{{ rsyslog_inputs
-                  | selectattr('type', 'equalto', 'imudp')
+                  | selectattr('module', 'equalto', 'imudp')
                   | selectattr('listeners')
                   | map(attribute='listeners')
                   | sum(start=[])
