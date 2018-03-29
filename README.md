@@ -148,11 +148,11 @@ We strongly advise to use **rulesets** to keep your configuration clean.
 
 ## Examples
 
-### RELP server
+### Server
 
 In this first example, we want to setup a *loghost* that centralizes logs of several *clients*.
 
-1. It accepts logs via the RELP protocol,
+1. It accepts logs via TCP,
 2. only over TLS,
 3. on port 6514.
 4. It outputs the received logs in a file,
@@ -164,8 +164,6 @@ In this first example, we want to setup a *loghost* that centralizes logs of sev
 rsyslog_additional_packages:
   # For TLS:
   - "rsyslog-gnutls"
-  # For RELP:
-  - "rsyslog-relp"
   # For SELinux:
   # CentOS:
   - "policycoreutils-python"
@@ -196,15 +194,12 @@ rsyslog_rulesets:
             stop
 
 rsyslog_inputs:
-  - module: imrelp
+  - module: imtcp
     parameters:
-      tls: "on"
-      tls.authmode: "name"
-      tls.permittedpeer:
-        - "10.0.0.100"
-        - "10.0.0.101"
-        - "10.0.0.102"
-        - "*.localdomain"
+      streamdriver.name: "gtls"
+      streamdriver.mode: 1
+      streamdriver.authmode: "x509/name"
+      permittedpeer: "client001"
     listeners:
       - port: 6514
         ruleset: "remote"
@@ -213,11 +208,11 @@ rsyslog_outputs: []
 ...
 ```
 
-### RELP client
+### Client
 
 In this second example, we want to setup a *client* that forwards all its logs to the previously configured *loghost*.
 
-1. It sends logs via the RELP protocol,
+1. It sends logs via TCP,
 2. only over TLS,
 3. on port 6514.
 
@@ -226,8 +221,6 @@ In this second example, we want to setup a *client* that forwards all its logs t
 rsyslog_additional_packages:
   # For TLS:
   - "rsyslog-gnutls"
-  # For RELP:
-  - "rsyslog-relp"
 
 rsyslog_working_dir: "/var/spool/rsyslog"
 
@@ -240,18 +233,17 @@ rsyslog_templates: []
 rsyslog_rulesets: []
 
 rsyslog_outputs:
-  - module: omrelp
+  - module: omfwd
     actions:
       - selector: "*.*"
         parameters:
           target: "loghost.localdomain"
-          tls: "on"
-          tls.cacert: "{{ rsyslog_tls.cacert }}"
-          tls.mycert: "{{ rsyslog_tls.cert }}"
-          tls.myprivkey: "{{ rsyslog_tls.key }}"
-          tls.authmode: "name"
-          tls.permittedpeer:
-            - "loghost.localdomain"
+          port: 6514
+          protocol: "tcp"
+          streamdriver: "gtls"
+          streamdrivermode: 1
+          streamdriverauthmode: "x509/name"
+          streamdriverpermittedpeers: "loghost.localdomain"
 ...
 ```
 
